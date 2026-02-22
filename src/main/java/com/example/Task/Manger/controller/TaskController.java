@@ -2,6 +2,7 @@ package com.example.Task.Manger.controller;
 
 import com.example.Task.Manger.model.Task;
 import com.example.Task.Manger.service.TaskMangerInterface;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class TaskController {
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
     @PostMapping("/tasks")
-    public ResponseEntity<String> createTask(@RequestBody Task task){
+    public ResponseEntity<String> createTask(@Valid @RequestBody Task task){
         String response=taskService.addTask(task);
         return  new ResponseEntity<>(response,HttpStatus.CREATED);
     }
