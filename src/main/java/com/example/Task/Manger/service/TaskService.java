@@ -2,9 +2,12 @@ package com.example.Task.Manger.service;
 
 import com.example.Task.Manger.exception.ResourceNotFound;
 import com.example.Task.Manger.model.Task;
+import com.example.Task.Manger.model.TaskStatus;
 import com.example.Task.Manger.repository.TaskManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public  class TaskService implements TaskMangerInterface {
@@ -13,14 +16,14 @@ public  class TaskService implements TaskMangerInterface {
     private TaskManagerRepository taskManagerRepository;
 
     @Override
-    public Iterable<Task> getAllTask() {
+    public List<Task> getAllTask() {
          return taskManagerRepository.findAll();
     }
 
     @Override
-    public String addTask(Task task) {
-       taskManagerRepository.save(task);
-       return "task is added Successfully";
+    public Task addTask(Task task) {
+
+       return taskManagerRepository.save(task);
     }
 
     @Override
@@ -30,12 +33,12 @@ public  class TaskService implements TaskMangerInterface {
     }
 
     @Override
-    public String updateTask(Long id ,Task task) {
+    public Task updateTask(Long id ,Task task) {
        taskManagerRepository.findById(id)
                .orElseThrow(() -> new ResourceNotFound("Task " + id + " not found"));
        task.setId(id);
-       taskManagerRepository.save(task);
-       return "task is updated Successfully";
+
+       return taskManagerRepository.save(task);
     }
 
     @Override
@@ -44,5 +47,11 @@ public  class TaskService implements TaskMangerInterface {
 
         taskManagerRepository.deleteById(id);
         return "task is deleted Successfully";
+    }
+
+    @Override
+    public List<Task> getTaskByStatus(TaskStatus name) {
+
+        return  taskManagerRepository.findByStatus(name);
     }
 }

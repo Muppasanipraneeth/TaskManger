@@ -17,8 +17,13 @@ public class TaskController {
     private TaskMangerInterface taskService;
 
     @GetMapping("/tasks")
-    public ResponseEntity<List<Task>> getAllTask(){
-      List<Task> tasks= (List<Task>) taskService.getAllTask();
+    public ResponseEntity<List<Task>> getAllTask(@RequestParam(required = false) TaskStatus taskStatus){
+        List<Task> tasks;
+        if(taskStatus != null){
+            tasks = taskService.getTaskByStatus(taskStatus);
+        }else{
+            tasks = taskService.getAllTask();
+        }
         return new ResponseEntity<>(tasks, HttpStatus.OK);
 
     }
@@ -28,9 +33,9 @@ public class TaskController {
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
     @PostMapping("/tasks")
-    public ResponseEntity<String> createTask(@Valid @RequestBody Task task){
-        String response=taskService.addTask(task);
-        return  new ResponseEntity<>(response,HttpStatus.CREATED);
+    public ResponseEntity<Task> createTask(@Valid @RequestBody Task task){
+
+        return  new ResponseEntity<>( taskService.addTask(task),HttpStatus.CREATED);
     }
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<String> deleteTaskById(@PathVariable long id){
@@ -39,9 +44,9 @@ public class TaskController {
     }
 
     @PutMapping("/tasks/{id}")
-    public ResponseEntity<String> updateTask(@PathVariable long id,@RequestBody Task task){
-        String response =taskService.updateTask(id,task);
-        return  new ResponseEntity<>(response,HttpStatus.OK);
+    public ResponseEntity<Task> updateTask(@Valid @PathVariable long id,@RequestBody Task task){
+
+        return  new ResponseEntity<>(taskService.updateTask(id,task),HttpStatus.OK);
 
     }
 }
