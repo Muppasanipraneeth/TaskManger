@@ -50,5 +50,11 @@ public class TaskController {
         return  new ResponseEntity<>(taskService.updateTask(id,task),HttpStatus.OK);
 
     }
+    @PostMapping("/tasks/restore/{id}")
+    public ResponseEntity<Task> restoreTask(@Valid @PathVariable long id){
+
+        return  new ResponseEntity<>(  taskService.restoreTaskById(id), HttpStatus.OK);
+
+    }
 
 }

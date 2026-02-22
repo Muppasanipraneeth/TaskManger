@@ -13,4 +13,6 @@ public interface TaskMangerInterface {
     public Task updateTask(Long id, Task task);
     public String deleteTaskById(long id);
     public List<Task> getTaskByStatus(TaskStatus name);
+    public Task restoreTaskById(Long id);
+
 }

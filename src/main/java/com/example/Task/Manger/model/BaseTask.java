@@ -18,10 +18,13 @@ public abstract class BaseTask {
     @Column(updatable = false, nullable = false)
     private LocalDateTime addedDate;
     private LocalDateTime updatedDate;
+    @Column(name = "`delete`")
+    private boolean delete;
 
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
+        this.delete=false;
         this.addedDate = now;
         this.updatedDate = now;
     }
