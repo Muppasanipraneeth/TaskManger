@@ -1,6 +1,7 @@
 package com.example.Task.Manger.controller;
 
 import com.example.Task.Manger.model.Task;
+import com.example.Task.Manger.model.TaskStatus;
 import com.example.Task.Manger.service.TaskMangerInterface;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,4 +50,5 @@ public class TaskController {
         return  new ResponseEntity<>(taskService.updateTask(id,task),HttpStatus.OK);
 
     }
+
 }
