@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class TaskController {
     private TaskMangerInterface taskService;
 
     @GetMapping("/tasks")
+    @PreAuthorize("hasAuthority('READ_TASK')")
     public ResponseEntity<List<Task>> getAllTask(@RequestParam(required = false) TaskStatus taskStatus){
         List<Task> tasks;
         if(taskStatus != null){
@@ -29,28 +31,33 @@ public class TaskController {
 
     }
     @GetMapping("/tasks/{id}")
+    @PreAuthorize("hasAuthority('READ_TASK')")
     public ResponseEntity<Task> getTaskById(@PathVariable long id){
         Task task= taskService.getTaskById(id);
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
     @PostMapping("/tasks")
+    @PreAuthorize("hasAuthority('CREATE_TASK')")
     public ResponseEntity<Task> createTask(@Valid @RequestBody Task task){
 
         return  new ResponseEntity<>( taskService.addTask(task),HttpStatus.CREATED);
     }
     @DeleteMapping("/tasks/{id}")
+    @PreAuthorize("hasAuthority('DELETE_TASK')")
     public ResponseEntity<String> deleteTaskById(@PathVariable long id){
         String response=taskService.deleteTaskById(id);
         return  new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @PutMapping("/tasks/{id}")
+    @PreAuthorize("hasAuthority('UPDATE_TASK')")
     public ResponseEntity<Task> updateTask(@Valid @PathVariable long id,@RequestBody Task task){
 
         return  new ResponseEntity<>(taskService.updateTask(id,task),HttpStatus.OK);
 
     }
     @PostMapping("/tasks/restore/{id}")
+    @PreAuthorize("hasAuthority('UPDATE_TASK')")
     public ResponseEntity<Task> restoreTask(@Valid @PathVariable long id){
 
         return  new ResponseEntity<>(  taskService.restoreTaskById(id), HttpStatus.OK);
