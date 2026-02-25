@@ -2,6 +2,7 @@ package com.example.Task.Manger.repository;
 
 import com.example.Task.Manger.model.Task;
 import com.example.Task.Manger.model.TaskStatus;
+import com.example.Task.Manger.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -14,11 +15,11 @@ import java.util.Optional;
 @Repository
 @EnableJpaRepositories
 public interface TaskManagerRepository extends JpaRepository<Task,Long> {
-    @Query("SELECT t FROM Task t WHERE t.delete=false AND t.status=:status")
-    public List<Task> findByStatus(@Param("status") TaskStatus status);
+    @Query("SELECT t FROM Task t WHERE t.delete=false AND t.status=:status AND t.user=:user")
+    public List<Task> findByStatus(@Param("status") TaskStatus status, @Param("user") User user);
 
-    @Query("SELECT t FROM Task t WHERE t.delete=false")
-    public List<Task> findAllActive();
+    @Query("SELECT t FROM Task t WHERE t.delete=false AND t.user=:user")
+    public List<Task> findAllActive(@Param("user") User user);
 
     @Query("SELECT t FROM Task t WHERE t.delete=true")
     public List<Task> findAllDeleted();

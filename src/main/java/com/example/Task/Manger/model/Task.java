@@ -1,9 +1,6 @@
 package com.example.Task.Manger.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +12,9 @@ import lombok.Setter;
 @Table(name = "task")
 public class Task extends BaseTask {
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
     @NotBlank(message = "Title is required")
     private String title;
     @NotBlank(message = "Description is required")

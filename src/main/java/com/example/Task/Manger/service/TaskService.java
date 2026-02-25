@@ -1,8 +1,10 @@
 package com.example.Task.Manger.service;
 
+import com.example.Task.Manger.dto.TaskResponse;
 import com.example.Task.Manger.exception.ResourceNotFound;
 import com.example.Task.Manger.model.Task;
 import com.example.Task.Manger.model.TaskStatus;
+import com.example.Task.Manger.model.User;
 import com.example.Task.Manger.repository.TaskManagerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,32 +18,31 @@ public  class TaskService implements TaskMangerInterface {
     @Autowired
     private TaskManagerRepository taskManagerRepository;
 
+    @Transactional
     @Override
-    public List<Task> getAllTask() {
-        return taskManagerRepository.findAllActive();
-    }
-
-    @Override
-    public Task addTask(Task task) {
-
-       return taskManagerRepository.save(task);
-    }
-
-    @Override
-    public Task getTaskById(long id) {
-
-        return taskManagerRepository.findById(id).orElseThrow(()->new ResourceNotFound("Task "+id+" not found"));
+    public List<TaskResponse> getAllTask(User user) {
+        return taskManagerRepository.findAllActive(user).stream().map(TaskResponse::from).toList();
     }
 
     @Transactional
     @Override
-    public Task updateTask(Long id ,Task task) {
+    public TaskResponse addTask(Task task) {
+        return TaskResponse.from(taskManagerRepository.save(task));
+    }
+
+    @Override
+    public TaskResponse getTaskById(long id) {
+        return TaskResponse.from(taskManagerRepository.findById(id).orElseThrow(()->new ResourceNotFound("Task "+id+" not found")));
+    }
+
+    @Transactional
+    @Override
+    public TaskResponse updateTask(Long id ,Task task) {
        taskManagerRepository.findById(id)
                .orElseThrow(() -> new ResourceNotFound("Task " + id + " not found"));
        task.setId(id);
        task.setDelete(false);
-
-       return taskManagerRepository.save(task);
+       return TaskResponse.from(taskManagerRepository.save(task));
     }
 
     @Transactional
@@ -54,16 +55,17 @@ public  class TaskService implements TaskMangerInterface {
     }
 
     @Override
-    public List<Task> getTaskByStatus(TaskStatus name) {
-
-        return  taskManagerRepository.findByStatus(name);
+    public List<TaskResponse> getTaskByStatus(TaskStatus name, User currentUser) {
+        List<Task> tasks = taskManagerRepository.findAllActive(currentUser);
+  return tasks.stream().map(TaskResponse::from).toList();
     }
 
     @Override
-    public Task restoreTaskById(Long id) {
+    public TaskResponse restoreTaskById(Long id) {
         Task task =taskManagerRepository.findInActiveById(id).orElseThrow(()->new ResourceNotFound("Task "+id+" not found"));
         task.setDelete(false);
 
-        return taskManagerRepository.save(task);
+
+        return TaskResponse.from(taskManagerRepository.save(task)) ;
     }
 }
